@@ -17,7 +17,7 @@ module.exports = {
           loader: "babel-loader",
           options: {
             presets: [
-              "@babel/preset-env",
+              ["@babel/preset-env", { targets: "defaults, not IE 11, not dead" }],
               ["@babel/preset-react", { runtime: "automatic" }]
             ],
           },
