@@ -1,19 +1,9 @@
-import { useStore } from "./context";
 import { increment, incrementSync } from "./store/reducers";
-import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
-  const { dispatch, getState, subscribe } = useStore();
-  const { counter } = getState();
-  const [_, forceUpdate] = useState(0);
-
-  useEffect(() => {
-    const dispose = subscribe(() => {
-      forceUpdate((_) => _ + 1);
-    });
-
-    return dispose;
-  }, []);
+  const counter = useSelector(state=>state.counter);
+  const dispatch = useDispatch();
 
   return (
     <div className="App">

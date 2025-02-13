@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client';
 import {applyMiddleware, compose, createStore} from 'redux';
 import App from './App.jsx';
 import rootReducer, { incrementSyncSaga } from './store/reducers.js';
-import { ReduxContext } from './context.js';
 import createSagaMiddleware from 'redux-saga';
+import { Provider } from 'react-redux';
 
 function thunk({ dispatch, getState }) {
   return next=>action=>{
@@ -24,7 +24,7 @@ sagaMiddleware.run(incrementSyncSaga);
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
-  <ReduxContext.Provider value={store}>
+  <Provider store={store}>
     <App />
-  </ReduxContext.Provider>
+  </Provider>
 )
