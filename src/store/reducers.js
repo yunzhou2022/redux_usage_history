@@ -1,48 +1,34 @@
-import { combineReducers } from "redux";
-import { takeEvery, put, delay } from "redux-saga/effects";
+import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-// Example reducer
-const counterReducer = (state = { count: 0 }, action) => {
-  switch (action.type) {
-    case "INCREMENT":
-      return {
-        ...state,
-        count: state.count + 1,
-      };
-    default:
-      return state;
-  }
-};
-
-export function increment() {
-  return {
-    type: "INCREMENT",
-  };
-}
-
-export function incrementSync(){
-  return {
-    type: 'INCREMENTSYNC'
-  }
-}
-
-
-
-function *incrementSyncSagaHandler(){
-  yield put({type:"INCREMENTSYNC_START"});
-  yield delay(1000);
-  yield put(increment());
-  yield put({type:"INCREMENTSYNC_END"});
-}
-
-export function *incrementSyncSaga(){
-  yield takeEvery("INCREMENTSYNC", incrementSyncSagaHandler);
-}
-
-    
-// Combine reducers
-const rootReducer = combineReducers({
-  counter: counterReducer,
+export const incrementSync = createAsyncThunk("INCREMENTSYNC", async () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 1000);
+  });
 });
 
-export default rootReducer;
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { count: 0, loading: false },
+  reducers: {
+    increment: (state) => {
+      state.count++;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(incrementSync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(incrementSync.fulfilled, (state) => {
+        state.loading = false;
+        state.count++;
+      });
+  },
+});
+
+export const { increment } = counterSlice.actions;
+
+export default counterSlice;
